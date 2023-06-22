@@ -105,31 +105,22 @@ def main():
 
     ssim = SSIM(win_size=11, data_range=1, size_average=True, channel=3)
     print('SSIM(original recon): ', ssim(data, data_reconstructed).item())
-    # DDPM 0.924 DDIM 0.945
     print('SSIM(encoded recon): ', ssim(encoded, data_reconstructed).item())
-    # DDPM 0.932 DDIM 0.947
     print('SSIM(original encoded): ', ssim(data, encoded).item())
-    # DDPM 0.974 DDIM 0.974
 
     psnr = PSNR()
     print('PSNR(original recon): ', psnr(data, data_reconstructed).item())
-    # DDPM 27.89 DDIM 29.18
     print('PSNR(encoded recon): ', psnr(encoded, data_reconstructed).item())
-    # DDPM 29.39 DDIM 30.94
     print('PSNR(original encoded): ', psnr(data, encoded).item())
-    # DDPM 32.62 DDIM 32.62
 
     discrim_out = hidden.discriminator(data)
     print('data Discriminator output: ', discrim_out.sigmoid().mean().item())
-    # DDPM 0.484 DDIM 0.484
 
     discrim_out = hidden.discriminator(encoded)
     print('encoded Discriminator output: ', discrim_out.sigmoid().mean().item())
-    # DDPM 0.475 DDIM 0.475
 
     discrim_out = hidden.discriminator(data_reconstructed)
     print('recon Discriminator output: ', discrim_out.sigmoid().mean().item())
-    # DDPM 0.475 DDIM 0.493
 
     encoded_decoded = hidden.encoder_decoder.decoder(encoded).view(-1, 1, 16, 16)
     save_image(encoded_decoded, save_dir + '/decoded_encoded.png', nrow=4)
@@ -140,11 +131,8 @@ def main():
 
     bit_accuracy = Bit_Accuracy()
     print('Bit accuracy(message encoded_decoded): ', bit_accuracy(encoded_decoded.view(-1, 256), message.view(-1, 256)).item())
-    # DDPM 0.999 DDIM 0.999
     print('Bit accuracy(message data_decoded): ', bit_accuracy(data_decoded.view(-1, 256), message.view(-1, 256)).item())
-    # DDPM 0.509 DDIM 0.509
     print('Bit accuracy(message recon_decoded): ', bit_accuracy(recon_decoded.view(-1, 256), message.view(-1, 256)).item())
-    # DDPM 0.635 DDIM 0.617
 
 
 if __name__ == '__main__':
