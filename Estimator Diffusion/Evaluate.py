@@ -121,36 +121,22 @@ def main():
 
     ssim = SSIM(win_size=11, data_range=1, size_average=True, channel=3)
     print('SSIM(original recon): ', ssim(data, data_reconstructed).item())
-    # DDPM 0.966 DDIM 0.963 conditional only
-    # DDPM 0.978 DDIM 0.981 distance guidance + conditional
     print('SSIM(encoded recon): ', ssim(encoded, data_reconstructed).item())
-    # DDPM 0.968 DDIM 0.961 conditional only
-    # DDPM 0.975 DDIM 0.976 distance guidance + conditional
     print('SSIM(original encoded): ', ssim(data, encoded).item())
-    # DDPM 0.974 DDIM 0.974
 
     psnr = PSNR()
     print('PSNR(original recon): ', psnr(data, data_reconstructed).item())
-    # DDPM 31.57 DDIM 31.87 conditional only
-    # DDPM 32.61 DDIM 33.30 distance guidance + conditional
     print('PSNR(encoded recon): ', psnr(encoded, data_reconstructed).item())
-    # DDPM 31.31 DDIM 30.77 conditional only
-    # DDPM 32.17 DDIM 31.79 distance guidance + conditional
     print('PSNR(original encoded): ', psnr(data, encoded).item())
-    # DDPM 32.62 DDIM 32.62
 
     discrim_out = hidden.discriminator(data)
     print('data Discriminator output: ', discrim_out.sigmoid().mean().item())
-    # DDPM 0.484 DDIM 0.484
 
     discrim_out = hidden.discriminator(encoded)
     print('encoded Discriminator output: ', discrim_out.sigmoid().mean().item())
-    # DDPM 0.475 DDIM 0.475
 
     discrim_out = hidden.discriminator(data_reconstructed)
     print('recon Discriminator output: ', discrim_out.sigmoid().mean().item())
-    # DDPM 0.450 DDIM 0.448 conditional only
-    # DDPM 0.448 DDIM 0.455 distance guidance + conditional
 
     encoded_decoded = hidden.encoder_decoder.decoder(encoded).view(-1, 1, 16, 16)
     save_image(encoded_decoded, save_dir + '/decoded_encoded.png', nrow=4)
@@ -161,12 +147,8 @@ def main():
 
     bit_accuracy = Bit_Accuracy()
     print('Bit accuracy(message encoded_decoded): ', bit_accuracy(encoded_decoded.view(-1, 256), message.view(-1, 256),).item())
-    # DDPM 0.999 DDIM 0.999
     print('Bit accuracy(message data_decoded): ', bit_accuracy(data_decoded.view(-1, 256), message.view(-1, 256)).item())
-    # DDPM 0.509 DDIM 0.509
     print('Bit accuracy(message recon_decoded): ', bit_accuracy(recon_decoded.view(-1, 256), message.view(-1, 256)).item())
-    # DDPM 0.592 DDIM 0.591 conditional only
-    # DDPM 0.584 DDIM 0.595 distance guidance + conditional
 
 
 if __name__ == '__main__':
