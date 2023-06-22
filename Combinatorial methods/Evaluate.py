@@ -63,10 +63,6 @@ def main():
     ])
 
     dataset = torchvision.datasets.CIFAR10(root='./CIFAR10', train=False, download=True, transform=transform)
-    dataset = torch.utils.data.Subset(dataset, [88, 80, 66, 87,
-                                                89, 81, 70, 71,
-                                                72, 85, 74, 84,
-                                                76, 83, 78, 79])
     dataloader = torch.utils.data.DataLoader(dataset, batch_size=16, drop_last=True, num_workers=2, shuffle=False)
     dataiterator = iter(dataloader)
 
@@ -120,31 +116,31 @@ def main():
     # Conditional diffusion: DDIM distance guidance + conditional
     ssim = SSIM(win_size=11, data_range=1, size_average=True, channel=3)
     print('SSIM(original recon): ', ssim(data, data_reconstructed).item())
-    # 0.978
+
     print('SSIM(encoded recon): ', ssim(encoded, data_reconstructed).item())
-    # 0.961
+
     print('SSIM(original encoded): ', ssim(data, encoded).item())
-    # 0.974
+
 
     psnr = PSNR()
     print('PSNR(original recon): ', psnr(data, data_reconstructed).item())
-    # 31.85
+
     print('PSNR(encoded recon): ', psnr(encoded, data_reconstructed).item())
-    # 29.17
+
     print('PSNR(original encoded): ', psnr(data, encoded).item())
-    # 32.62
+
 
     discrim_out = hidden.discriminator(data)
     print('data Discriminator output: ', discrim_out.sigmoid().mean().item())
-    # 0.484
+
 
     discrim_out = hidden.discriminator(encoded)
     print('encoded Discriminator output: ', discrim_out.sigmoid().mean().item())
-    # 0.475
+
 
     discrim_out = hidden.discriminator(data_reconstructed)
     print('recon Discriminator output: ', discrim_out.sigmoid().mean().item())
-    # 0.464
+
 
     encoded_decoded = hidden.encoder_decoder.decoder(encoded).view(-1, 1, 16, 16)
     save_image(encoded_decoded, save_dir + '/decoded_encoded.png', nrow=4)
@@ -155,11 +151,11 @@ def main():
 
     bit_accuracy = Bit_Accuracy()
     print('Bit accuracy(message encoded_decoded): ', bit_accuracy(message.view(-1, 256), encoded_decoded.view(-1, 256)).item())
-    # 0.999
+
     print('Bit accuracy(message data_decoded): ', bit_accuracy(message.view(-1, 256), data_decoded.view(-1, 256)).item())
-    # 0.509
+
     print('Bit accuracy(message recon_decoded): ', bit_accuracy(message.view(-1, 256), recon_decoded.view(-1, 256)).item())
-    # 0.514
+
 
 
 if __name__ == '__main__':
